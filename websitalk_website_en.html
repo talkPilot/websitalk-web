@@ -2,6 +2,26 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
+<script>
+(function(){
+  try {
+    var KEY = 'ws_lang';
+    var stored = localStorage.getItem(KEY);
+    if (stored === 'he') { location.replace('/'); return; }
+    if (stored === 'en') { return; }
+    var primary = (navigator.language || (navigator.languages && navigator.languages[0]) || navigator.userLanguage || '').toLowerCase();
+    var isHebrew = primary.indexOf('he') === 0;
+    var isEnglish = primary.indexOf('en') === 0;
+    if (isEnglish) { localStorage.setItem(KEY, 'en'); return; }
+    if (isHebrew) { localStorage.setItem(KEY, 'he'); location.replace('/'); return; }
+    fetch('https://ipapi.co/json/', {cache:'no-store'}).then(function(r){ return r.json(); }).then(function(d){
+      var isIL = d && d.country_code === 'IL';
+      localStorage.setItem(KEY, isIL ? 'he' : 'en');
+      if (isIL) location.replace('/');
+    }).catch(function(){});
+  } catch(e) {}
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Websitalk — Turn More Prospects into Sales Opportunities</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">

@@ -2,6 +2,26 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
+<script>
+(function(){
+  try {
+    var KEY = 'ws_lang';
+    var stored = localStorage.getItem(KEY);
+    if (stored === 'en') { location.replace('/en/'); return; }
+    if (stored === 'he') { return; }
+    var primary = (navigator.language || (navigator.languages && navigator.languages[0]) || navigator.userLanguage || '').toLowerCase();
+    var isHebrew = primary.indexOf('he') === 0;
+    var isEnglish = primary.indexOf('en') === 0;
+    if (isHebrew) { localStorage.setItem(KEY, 'he'); return; }
+    if (isEnglish) { localStorage.setItem(KEY, 'en'); location.replace('/en/'); return; }
+    fetch('https://ipapi.co/json/', {cache:'no-store'}).then(function(r){ return r.json(); }).then(function(d){
+      var isIL = d && d.country_code === 'IL';
+      localStorage.setItem(KEY, isIL ? 'he' : 'en');
+      if (!isIL) location.replace('/en/');
+    }).catch(function(){});
+  } catch(e) {}
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Websitalk — הופכת יותר מתעניינים להזדמנויות מכירה</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
